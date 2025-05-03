@@ -4,6 +4,8 @@
 
 ## 快速开始
 
+![alt text](image.png)
+
 1. 复制配置模板
 ```bash
 cp config/env.template.js config/env.js
