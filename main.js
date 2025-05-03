@@ -13,6 +13,7 @@ app.post('/create-order', async (req, res) => {
   const { orderId, amount, subject, body } = req.body;
   try {
     const result = await createAlipayOrder(orderId, amount, subject, body);
+    res.setHeader('Content-Type', 'text/html;charset=utf-8');
     res.send(result);
   } catch (error) {
     res.status(500).send({ error: error.message });
