@@ -1,8 +1,8 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 import { createAlipayOrder } from './payment.js';
 import { handleAlipayNotify } from './notify.js';
-import alipayClient from './config.js';
+import client from './config.js';
+import bodyParser from 'body-parser';
 import fs from 'fs';
 import path from 'path';
 
@@ -64,7 +64,7 @@ app.listen(3000, () => {
 
 async function test() {
   try {
-    console.log('支付宝客户端配置:', alipayClient.config);
+    console.log('支付宝客户端配置:', client.config);
   } catch (error) {
     console.error('错误:', error);
   }
