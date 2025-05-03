@@ -17,9 +17,9 @@ export async function createAlipayOrder(orderId, amount, subject, body) {
       product_code: 'FAST_INSTANT_TRADE_PAY'
     };
 
-    console.log('原始 bizContent:', bizContent);
-    const encodedBizContent = encodeURIComponent(JSON.stringify(bizContent));
-    console.log('编码后的 bizContent:', encodedBizContent);
+    // 直接使用 JSON.stringify，不进行 URL 编码
+    const bizContentStr = JSON.stringify(bizContent);
+    console.log('序列化后的 bizContent:', bizContentStr);
 
     const formData = {
       app_id: client.config.appId,
@@ -30,7 +30,7 @@ export async function createAlipayOrder(orderId, amount, subject, body) {
       timestamp: formatDate(new Date()),
       notify_url: client.config.notifyUrl,
       return_url: client.config.returnUrl,
-      biz_content: encodedBizContent
+      biz_content: bizContentStr // 直接使用 JSON 字符串
     };
 
     // 验证参数完整性
@@ -41,17 +41,19 @@ export async function createAlipayOrder(orderId, amount, subject, body) {
       }
     });
 
-    // 生成表单
+    // 在表单生成时不进行解码
     const form = `
       <form id="alipaySubmit" name="alipaySubmit" action="${client.config.gateway}" method="POST">
-        ${Object.entries(formData).map(([key, value]) => 
-          `<input type="hidden" name="${key}" value="${decodeURIComponent(value)}"/>`
-        ).join('\n')}
-        <script>
-          console.log('表单数据:', ${JSON.stringify(formData)});
-          document.forms["alipaySubmit"].submit();
-        </script>
+        ${Object.entries(formData).map(([key, value]) => {
+          console.log(`生成表单字段 ${key}:`, value);
+          return `<input type="hidden" name="${key}" value='${value}'/>`;
+        }).join('\n')}
+        <input type="submit" value="提交" style="display:none;">
       </form>
+      <script>
+        console.log('提交的表单数据:', ${JSON.stringify(formData)});
+        document.getElementById('alipaySubmit').submit();
+      </script>
     `;
 
     return form;
