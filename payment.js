@@ -11,11 +11,15 @@ export async function createAlipayOrder(orderId, amount, subject, body) {
   try {
     const bizContent = {
       out_trade_no: orderId,
-      total_amount: amount,
+      total_amount: amount.toString(),
       subject: subject,
       body: body,
       product_code: 'FAST_INSTANT_TRADE_PAY'
     };
+
+    console.log('原始 bizContent:', bizContent);
+    const encodedBizContent = encodeURIComponent(JSON.stringify(bizContent));
+    console.log('编码后的 bizContent:', encodedBizContent);
 
     const formData = {
       app_id: client.config.appId,
@@ -26,22 +30,33 @@ export async function createAlipayOrder(orderId, amount, subject, body) {
       timestamp: formatDate(new Date()),
       notify_url: client.config.notifyUrl,
       return_url: client.config.returnUrl,
-      biz_content: JSON.stringify(bizContent)
+      biz_content: encodedBizContent
     };
 
-    // 生成签名并构造表单
+    // 验证参数完整性
+    Object.entries(formData).forEach(([key, value]) => {
+      console.log(`检查参数 ${key}:`, value);
+      if (!value) {
+        throw new Error(`参数 ${key} 不能为空`);
+      }
+    });
+
+    // 生成表单
     const form = `
       <form id="alipaySubmit" name="alipaySubmit" action="${client.config.gateway}" method="POST">
         ${Object.entries(formData).map(([key, value]) => 
-          `<input type="hidden" name="${key}" value="${value}"/>`
+          `<input type="hidden" name="${key}" value="${decodeURIComponent(value)}"/>`
         ).join('\n')}
-        <script>document.forms["alipaySubmit"].submit();</script>
+        <script>
+          console.log('表单数据:', ${JSON.stringify(formData)});
+          document.forms["alipaySubmit"].submit();
+        </script>
       </form>
     `;
 
     return form;
   } catch (error) {
-    console.error('创建支付宝订单失败:', error);
+    console.error('创建订单失败:', error);
     throw error;
   }
 }
