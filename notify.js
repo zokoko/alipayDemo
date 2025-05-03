@@ -1,6 +1,6 @@
 // notify.js
 
-import client from './config.js';
+import client from './loadConfig.js';
 
 export async function handleAlipayNotify(req, res) {
   try {

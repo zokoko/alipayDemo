@@ -1,11 +1,20 @@
 {
+  "name": "alipay-server",
+  "version": "1.0.0",
   "type": "module",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
     "body-parser": "^1.20.2",
-    "alipay-sdk": "^3.6.0"
+    "alipay-sdk": "^3.6.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.3"
   },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development node main.js",
+    "start": "cross-env NODE_ENV=production node main.js"
   }
 }

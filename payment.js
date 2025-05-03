@@ -1,6 +1,6 @@
 // payment.js
 
-import client from './config.js';
+import client from './loadConfig.js';
 
 function formatDate(date) {
   const pad = (num) => (num < 10 ? '0' + num : num);
@@ -32,9 +32,20 @@ export async function createAlipayOrder(orderId, amount, subject, body) {
 
     console.log('支付宝返回结果:', result);
 
-    // 直接返回支付链接
+    // 添加沙箱账号提示
     return `
-      <script>window.location.href = "${result}";</script>
+      <div style="text-align:center;margin:20px;">
+        <h3>正在跳转到支付宝沙箱环境</h3>
+        <p>请使用沙箱买家账号登录:</p>
+        <p>账号：沙箱账号（例如：yncxvv5578@sandbox.com）</p>
+        <p>登录密码：111111</p>
+        <p>支付密码：111111</p>
+      </div>
+      <script>
+        setTimeout(() => {
+          window.location.href = "${result}";
+        }, 3000);
+      </script>
     `;
   } catch (error) {
     console.error('创建订单失败:', error);

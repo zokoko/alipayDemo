@@ -1,7 +1,7 @@
 import express from 'express';
 import { createAlipayOrder } from './payment.js';
 import { handleAlipayNotify } from './notify.js';
-import client from './config.js';
+import client from './loadConfig.js';
 import bodyParser from 'body-parser';
 import fs from 'fs';
 import path from 'path';
