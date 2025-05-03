@@ -40,6 +40,8 @@ yarn dev
 # 生产环境
 yarn start
 ```
+访问即可
+http://localhost:3000/
 
 ## 目录结构
 ```
